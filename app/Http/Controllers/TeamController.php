@@ -9,6 +9,6 @@ class TeamController extends Controller
 {
     //
     public function Index(){
-    	return Team::all(); 
+    	return Team::all();	 
     }
 }

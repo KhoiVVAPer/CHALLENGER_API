@@ -19,13 +19,14 @@ class CreateUsersTable extends Migration
             $table->string('Username')->unique();
             $table->string('password');
             $table->string('Fullname')->nullable();
-            $table->integer('Age')->nullable();
+            $table->date('DateOfBirth')->nullable();
+            $table->string('Sex')->nullable();
             $table->string('Email')->unique();
             $table->integer('Weight')->nullable();
             $table->string('Height')->nullable();
             $table->integer('TotalMatches')->nullable();
-            $table->string('Hometown')->nullable();
-            $table->integer('CityId')->nullable();
+            $table->string('PhoneNumber')->nullable();
+            $table->integer('City')->nullable();
             $table->string('Ward')->nullable();
             $table->string('Description')->nullable();
             $table->string('ImgUrl')->nullable();

@@ -9,4 +9,7 @@ class PositionController extends Controller
     public function GetUsers($id){
     	return Position::find($id)->users;
     }
+    public function GetAllPositions(){
+    	return Position::all();
+    }
 }

@@ -17,6 +17,7 @@ class CreatePositionUserTable extends Migration
             $table->increments('id');
             $table->integer('position_id');
             $table->integer('user_id');
+            $table->string('TypeCode');
             $table->timestamps();
         });
     }

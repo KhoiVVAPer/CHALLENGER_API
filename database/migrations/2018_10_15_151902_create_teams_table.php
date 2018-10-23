@@ -23,7 +23,7 @@ class CreateTeamsTable extends Migration
             $table->integer('TotalMatch');
             $table->integer('TotalWin');
             $table->string('Ward');
-            $table->integer('CityId');
+            $table->integer('City');
             $table->text('Description');
             $table->integer('Status');
             $table->timestamps();
