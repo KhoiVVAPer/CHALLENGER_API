@@ -27,6 +27,7 @@ Route::post('users','UserController@AddUser');
 /* Edit User */
 Route::put('users/edit/{id}','UserController@EditUser');
 
+
 /* Trả về danh sách position theo user_id */
 Route::get('users/{id}/positions','UserController@GetPositions');
 
@@ -48,4 +49,9 @@ Route::put('user/positions/mp/update','UserController@UserAddOrUpdateMainPositio
 Route::post('user/positions/ep/add','UserController@UserAddOrUpdateExtraPosition');
 Route::put('user/positions/ep/update','UserController@UserAddOrUpdateExtraPosition');
 
+Route::put('user/{id}/position/update','PositionController@UpdateUserPosition');
+Route::delete('user/{id}/position/delete','PositionController@DeleteUserEPosition');
+
 Route::delete('user/positions/ep/delete/{id}','UserController@UserDeletePosition');
+
+Route::put('user/{id}/powers/update','UserController@UserPowerUpdate');

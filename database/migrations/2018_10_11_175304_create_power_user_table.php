@@ -18,6 +18,7 @@ class CreatePowerUserTable extends Migration
             $table->integer('user_id');
             $table->integer('power_id');
             $table->integer('self_point')->nullable();
+            $table->integer('ViewStatus')->nullable();
             $table->timestamps();
         });
     }
