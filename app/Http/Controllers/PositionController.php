@@ -7,6 +7,10 @@ use App\Position;
 use App\User;
 class PositionController extends Controller
 {
+    public function GetPosition($id){
+        return Position::find($id);
+    }
+
     public function GetUsers($id){
     	return Position::find($id)->users;
     }

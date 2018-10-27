@@ -35,6 +35,8 @@ Route::get('positions/{id}/users','PositionController@GetUsers');
 
 Route::get('positions', 'PositionController@GetAllPositions');
 
+Route::get('positions/{id}', 'PositionController@GetPosition');
+
 Route::get('users/{id}/powers','UserController@GetPowers');
 
 Route::get('users/{id}/teams','UserController@GetTeams');
@@ -55,3 +57,9 @@ Route::delete('user/{id}/position/delete','PositionController@DeleteUserEPositio
 Route::delete('user/positions/ep/delete/{id}','UserController@UserDeletePosition');
 
 Route::put('user/{id}/powers/update','UserController@UserPowerUpdate');
+
+Route::get('team/{id}','TeamController@GetTeamById');
+
+Route::get('team/{id}/members','TeamController@GetTeamMembers');
+
+Route::get('team/{id}/members/details','TeamController@GetTeamMembersDetails');
