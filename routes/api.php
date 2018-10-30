@@ -56,10 +56,17 @@ Route::delete('user/{id}/position/delete','PositionController@DeleteUserEPositio
 
 Route::delete('user/positions/ep/delete/{id}','UserController@UserDeletePosition');
 
+// Cập nhập thay đổi giá trị của chỉ số người dùng 
 Route::put('user/{id}/powers/update','UserController@UserPowerUpdate');
+
+// Cập nhập thay đổi danh sách chỉ số người dùng
+Route::put('user/{id}/listPower/update', 'UserController@UserListPowerUpdate');
+Route::delete('user/listPower/delete/{id}', 'UserController@UserListPowerDelete');
 
 Route::get('team/{id}','TeamController@GetTeamById');
 
 Route::get('team/{id}/members','TeamController@GetTeamMembers');
 
 Route::get('team/{id}/members/details','TeamController@GetTeamMembersDetails');
+
+Route::post('user/{id}/powers/add/','UserController@addUserPowers');

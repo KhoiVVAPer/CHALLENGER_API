@@ -74,6 +74,21 @@ class UserController extends Controller
         ->groupBy('power_user.id','powers.PowerName','powers.Description','position_user.TypeCode','power_user.self_point','power_user.ViewStatus')
         ->get();
     }
+
+    public function addUserPowers($id,Request $request){
+        $listPowers = Position::find($request['idPosition'])->power; 
+        foreach ($listPowers as $key => $value) {
+            DB::table('power_user')->insert(['user_id' => $id, 'power_id' => $value->id,'self_point' => '20','ViewStatus' => '1']);
+        }
+        return DB::table('powers')
+        ->join('power_user', 'power_user.power_id','=','powers.id')
+        ->join('position_user','powers.position_id','=','position_user.position_id')
+        ->select('power_user.id','powers.PowerName','powers.Description','position_user.TypeCode','power_user.self_point','power_user.ViewStatus')
+        ->where('power_user.user_id',$id)
+        ->where('position_user.user_id',$id)
+        ->groupBy('power_user.id','powers.PowerName','powers.Description','position_user.TypeCode','power_user.self_point','power_user.ViewStatus')
+        ->get(); 
+    }
     public function GetTeams($id){
     	return User::find($id)->teams;
     }
@@ -123,5 +138,35 @@ class UserController extends Controller
             'ViewStatus' => $request[$i]['ViewStatus']]); 
         }
         return "1";
+    }
+
+    public function UserListPowerUpdate($id,Request $request){
+        $type = DB::table('position_user')
+        ->select('position_user.TypeCode')
+        ->where('id','=',$request['id'])
+        ->get();
+        $position = DB::table('position_user')->where('user_id','=',$id)->where('TypeCode','=',$type[0]->TypeCode)->get();
+        $listPowers = Position::find($position[0]->position_id)->power;
+        foreach ($listPowers as $key => $value) {
+            DB::table('power_user')
+            ->where('user_id','=',$id)
+            ->where('power_id','=',$value->id)
+            ->delete();
+        }
+        $listAddPowers = Position::find($request['position_id'])->power;
+        foreach ($listAddPowers as $key => $value) {
+            DB::table('power_user')->insert(['user_id' => $id, 'power_id' => $value->id,'self_point' => '20','ViewStatus' => '1']);
+        }
+    }
+    public function UserListPowerDelete($id){
+        $position = DB::table('position_user')->where('id','=',$id)->get();
+        $user_id = $position[0]->user_id;
+        $listPowers = Position::find($position[0]->position_id)->power;
+        foreach ($listPowers as $key => $value) {
+            DB::table('power_user')
+            ->where('user_id','=',$user_id)
+            ->where('power_id','=',$value->id)
+            ->delete();
+        }
     }
 }
