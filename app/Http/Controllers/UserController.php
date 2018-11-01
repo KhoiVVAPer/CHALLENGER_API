@@ -169,4 +169,8 @@ class UserController extends Controller
             ->delete();
         }
     }
+
+    public function GetAllNotification($id){
+        return User::find($id)->notifications;
+    }
 }

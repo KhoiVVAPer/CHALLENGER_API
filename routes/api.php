@@ -70,3 +70,9 @@ Route::get('team/{id}/members','TeamController@GetTeamMembers');
 Route::get('team/{id}/members/details','TeamController@GetTeamMembersDetails');
 
 Route::post('user/{id}/powers/add/','UserController@addUserPowers');
+
+
+Route::get('user/{id}/notifications','UserController@GetAllNotification');
+
+Route::get('user/{id}/ListUserSendNotification','NotificationController@GetListUser');
+Route::post('user/{id}/friend-request/add','NotificationController@AddFriendRequest');
