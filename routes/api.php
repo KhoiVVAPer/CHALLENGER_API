@@ -15,6 +15,7 @@ use App\Position;
 |
 */
 Route::post('login','AuthenController@login');
+
 /* Trả về danh sách user */
 Route::get('users','UserController@Index');
 
@@ -22,7 +23,9 @@ Route::get('users','UserController@Index');
 Route::get('users/{id}','UserController@GetById');
 
 /* Thêm User */
-Route::post('users','UserController@AddUser');
+Route::post('users/add','UserController@addUser');
+/* Check User */
+Route::post('users/check','UserController@checkUser');
 
 /* Edit User */
 Route::put('users/edit/{id}','UserController@EditUser');
@@ -76,3 +79,18 @@ Route::get('user/{id}/notifications','UserController@GetAllNotification');
 
 Route::get('user/{id}/ListUserSendNotification','NotificationController@GetListUser');
 Route::post('user/{id}/friend-request/add','NotificationController@AddFriendRequest');
+
+Route::delete('user/notifications/delete/{id}','NotificationController@DeleteRequest');
+
+
+Route::get('user/{id}/notifications/sended','UserController@GetListUserNotificationSended');
+
+Route::post('user/{id}/friends/add', 'UserController@AddFriend');
+
+Route::get('user/{id}/friends','UserController@GetFriends');
+
+
+Route::delete('user/{user_id}/friends/delete/{friend_id}','UserController@DeleteFriend');
+
+
+Route::get('user/{id}/conversations','UserController@GetConversations');

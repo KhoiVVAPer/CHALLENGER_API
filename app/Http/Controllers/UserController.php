@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Power;
 use App\Position;
+use App\Events\UserFriends;
 class UserController extends Controller
 {
 	/*
@@ -14,6 +15,42 @@ class UserController extends Controller
 	 */
     public function Index(){
     	return User::all(); 
+    }
+
+    /*
+        Thêm tài khoản
+    */
+   public function addUser(Request $request){
+        $user = new User;
+        $user->Username = $request['UserName'];
+        $user->password = $request['password'];
+        $user->Fullname = $request['Fullname'];
+        $user->Email = $request['Email'];
+        $user->UserCode = rand (100,99999) . "";
+        $user->status = 0;
+        $user->DateOfBirth = $request['DateOfBirth'];
+        $user->ImgUrl = $request['ImgUrl'];
+        $user->Sex = $request['Sex'];
+        $user->save();
+        return $user;
+   }
+
+    /*
+        Kiểm tra tài khoản
+    */
+    public function checkUser(Request $request){
+        $result = [];
+        if(User::where('Username',$request['username'])->count() > 0){
+            $result[] = "-1";
+        }
+        if(User::where('Email',$request['email'])->count() > 0){
+            $result[] = "-2";
+        }
+        if(count($result) == 0){
+           
+            $result[] = "1";
+        }
+        return $result;
     }
 
     /*
@@ -29,12 +66,6 @@ class UserController extends Controller
      */
     public function GetById($id){
     	return User::find($id);
-    }
-    /*
-    	Thêm user
-     */
-    public function AddUser(Request $request){
-    	return User::create($request->all());
     }
 
     public function EditUser(Request $request, $id){
@@ -105,11 +136,22 @@ class UserController extends Controller
         $user->MainPosition = $position->PositionName;
         $user->save();
         if($request['id']){
-            return DB::table('position_user')->where('id',$request['id'])
-            ->update(['position_id' => $request['position_id'],'user_id' => $request['user_id']]);
+            if(DB::table('position_user')->where('id',$request['id'])
+                ->update(['position_id' => $request['position_id'],'user_id' => $request['user_id']]))
+            {
+                return 1;
+            }else{
+                return 0;
+            }
         }else{
-            return DB::table('position_user')
-            ->insert(['position_id' => $request['position_id'],'user_id' => $request['user_id'],'TypeCode' => 'MP']);
+            if(DB::table('position_user')
+            ->insert(['position_id' => $request['position_id'],'user_id' => $request['user_id'],'TypeCode' => 'MP']))
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+            
         }
     }
     public function UserAddOrUpdateExtraPosition(Request $request){
@@ -173,4 +215,79 @@ class UserController extends Controller
     public function GetAllNotification($id){
         return User::find($id)->notifications;
     }
+
+    public function GetListUserNotificationSended($id){
+        return DB::table('notifications')
+        ->select('notifications.user_id')
+        ->where('from_id','=',$id)
+        ->get();
+    }
+
+    public function AddFriend($id,Request $request){
+        $listFriends = DB::table('user_friend')->where('user_id','=',$id)->get();
+        foreach ($listFriends as $key => $value) {
+            if($value->friend_id == $request['friendId']){
+                return $listFriends;
+            }
+        }
+        DB::table('user_friend')
+        ->insert(['user_id' => $id,'friend_id' => $request['friendId']]);
+        DB::table('user_friend')
+        ->insert(['friend_id' => $id,'user_id' => $request['friendId']]);
+        $friend = User::find($request['friendId']);
+        broadcast(new UserFriends($friend))->toOthers();
+        return $listFriends;
+    }
+
+    public function GetFriends($id){
+        $listFriends = [];
+        $listFriendsId = DB::table('user_friend')
+                        ->select('friend_id')
+                        ->where('user_id','=',$id)
+                        ->get();
+        foreach ($listFriendsId as $item => $value) {
+            $listFriends[] = User::find($value->friend_id);
+        }
+        return $listFriends;
+    }
+
+    public function DeleteFriend($userId,$friendId){
+        if(DB::table('user_friend')
+                        ->select('friend_id')
+                        ->where('user_id','=',$userId)
+                        ->where('friend_id','=',$friendId)
+                        ->delete() &&
+        DB::table('user_friend')
+                    ->select('friend_id')
+                    ->where('user_id','=',$friendId)
+                    ->where('friend_id','=',$userId)
+                    ->delete()){
+            $friend = User::find($friendId);
+            broadcast(new UserFriends($friend))->toOthers();
+            return 1;
+        }
+    }
+    public function GetConversations($id){
+        return DB::table('conversations')
+        ->where('user_one','=',$id)
+        ->orWhere('user_second','=',$id)
+        ->get();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

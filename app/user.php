@@ -19,8 +19,11 @@ class user extends Authenticatable
         return $this->belongsToMany(Team::class);
    }
 
-   public function notifications(){
-    	return $this->hasMany(Notification::class);
-    }
+  public function notifications(){
+  	return $this->hasMany(Notification::class);
+  }
+  public function conversations(){
+    return $this->hasMany(Conversation::class);
+  }
 
 }
