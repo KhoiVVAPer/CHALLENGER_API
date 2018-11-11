@@ -288,13 +288,11 @@ class UserController extends Controller
         'conversation_id' => $id,
         'message' => $request['message']
         ]);
-        $newMessage = Message::where('conversation_id', $id)
-        ->orderBy('id', 'DESC')
-        ->take(1)
+        $listMessage = Message::where('conversation_id', $id)
         ->get();
         $conver = Conversation::find($id);
         broadcast(new NewMessage($conver))->toOthers();
-        return $conver;
+        return $listMessage;
     }
 }
 
