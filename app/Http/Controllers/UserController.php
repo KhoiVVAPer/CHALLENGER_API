@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Power;
 use App\Position;
+use App\Conversation;
+use App\Message;
 use App\Events\UserFriends;
+use App\Events\NewMessage;
 class UserController extends Controller
 {
 	/*
@@ -272,6 +275,26 @@ class UserController extends Controller
         ->where('user_one','=',$id)
         ->orWhere('user_second','=',$id)
         ->get();
+    }
+    public function GetConversationsMessages($id){
+        return Message::where('conversation_id', $id)
+             ->orderBy('id', 'DESC')
+             ->get();
+    }
+    public function AddConversationsMessages($id,Request $request){
+        DB::table('messages')
+        ->insert(['from_user_id' => $request['fromUserId'],
+        'to_user_id' => $request['toUserId'],
+        'conversation_id' => $id,
+        'message' => $request['message']
+        ]);
+        $newMessage = Message::where('conversation_id', $id)
+        ->orderBy('id', 'DESC')
+        ->take(1)
+        ->get();
+        $conver = Conversation::find($id);
+        broadcast(new NewMessage($conver))->toOthers();
+        return $conver;
     }
 }
 
