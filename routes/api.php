@@ -94,5 +94,6 @@ Route::delete('user/{user_id}/friends/delete/{friend_id}','UserController@Delete
 
 
 Route::get('user/{id}/conversations','UserController@GetConversations');
+Route::post('user/conversations/add','UserController@AddConversations');
 Route::get('conversations/{id}/messages','UserController@GetConversationsMessages');
 Route::post('conversations/{id}/messages/add','UserController@AddConversationsMessages');

@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Conversation;
+use App\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -15,15 +16,15 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 class NewMessage implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $conversation;
+    public $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Conversation $conversation)
+    public function __construct(Message $message)
     {
-        $this->conversation = $conversation;
+        $this->message = $message;
     }
 
     /**
@@ -33,6 +34,6 @@ class NewMessage implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('conversation.'.$this->conversation->id.'.messages');
+        return new Channel('conversation.'.$this->message->conversation_id.'.messages');
     }
 }

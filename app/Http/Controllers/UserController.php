@@ -11,6 +11,7 @@ use App\Conversation;
 use App\Message;
 use App\Events\UserFriends;
 use App\Events\NewMessage;
+use App\Events\NewConversation;
 class UserController extends Controller
 {
 	/*
@@ -276,6 +277,16 @@ class UserController extends Controller
         ->orWhere('user_second','=',$id)
         ->get();
     }
+    public function AddConversations(Request $request){
+        DB::table('conversations')
+        ->insert(['user_one' => $request['user_one'],
+                'user_second' => $request['user_second']]);
+                
+        $conver = Conversation::orderBy('id','DESC')->take(1)->get();
+        broadcast(new NewConversation(User::find($conver[0]->user_one)))->toOthers();
+        broadcast(new NewConversation(User::find($conver[0]->user_second)))->toOthers();
+        return "1";
+    }
     public function GetConversationsMessages($id){
         return Message::where('conversation_id', $id)
              ->orderBy('id', 'DESC')
@@ -290,8 +301,8 @@ class UserController extends Controller
         ]);
         $listMessage = Message::where('conversation_id', $id)
         ->get();
-        $conver = Conversation::find($id);
-        broadcast(new NewMessage($conver))->toOthers();
+        $message = Message::where('conversation_id',$id)->orderBy('id','DESC')->take(1)->get();
+        broadcast(new NewMessage($message[0]))->toOthers();
         return $listMessage;
     }
 }
