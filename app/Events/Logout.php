@@ -2,7 +2,7 @@
 
 namespace App\Events;
 use App\User;
-use App\Conversation;
+
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -12,20 +12,19 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class NewConversation implements ShouldBroadcastNow
+class Logout implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    private $user;
-    public $newConversation;
+
+    public $user;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Conversation $conver ,User $user)
+    public function __construct(User $user)
     {
         $this->user = $user;
-        $this->newConversation = $conver;
     }
 
     /**
@@ -35,6 +34,6 @@ class NewConversation implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('user.'.$this->user->id.'.conversations');
+        return new Channel('user-logout');
     }
 }

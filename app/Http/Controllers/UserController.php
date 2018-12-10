@@ -275,17 +275,17 @@ class UserController extends Controller
         return DB::table('conversations')
         ->where('user_one','=',$id)
         ->orWhere('user_second','=',$id)
+        ->orderBy('id','DESC')  
         ->get();
     }
     public function AddConversations(Request $request){
         DB::table('conversations')
         ->insert(['user_one' => $request['user_one'],
                 'user_second' => $request['user_second']]);
-                
         $conver = Conversation::orderBy('id','DESC')->take(1)->get();
-        broadcast(new NewConversation(User::find($conver[0]->user_one)))->toOthers();
-        broadcast(new NewConversation(User::find($conver[0]->user_second)))->toOthers();
-        return "1";
+        broadcast(new NewConversation($conver[0],User::find($conver[0]->user_one)))->toOthers();
+        broadcast(new NewConversation($conver[0],User::find($conver[0]->user_second)))->toOthers();
+        return $conver[0];
     }
     public function GetConversationsMessages($id){
         return Message::where('conversation_id', $id)
@@ -304,6 +304,20 @@ class UserController extends Controller
         $message = Message::where('conversation_id',$id)->orderBy('id','DESC')->take(1)->get();
         broadcast(new NewMessage($message[0]))->toOthers();
         return $listMessage;
+    }
+    public function ChangeName($id,Request $request){
+        $editUser = DB::table('teams')->where('id','=', $id)->update(['Fullname' =>$request['newName']]);
+        if($editUser){
+            return "1";
+        }
+        return 0;
+    }
+    public function ChangeCity($id,Request $request){
+        $editUser = DB::table('teams')->where('id','=', $id)->update(['City' =>$request['newCity']]);
+        if($editUser){
+            return "1";
+        }
+        return 0;
     }
 }
 
