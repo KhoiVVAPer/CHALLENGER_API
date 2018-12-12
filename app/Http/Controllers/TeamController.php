@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Invitation;
 use App\Team;
+use App\Matches;
 use Illuminate\Support\Facades\DB;
 class TeamController extends Controller
 {
@@ -19,6 +20,22 @@ class TeamController extends Controller
 
     public function Index(){
     	return Team::all();	 
+    }
+    public function AddMatch(Request $request){
+        $newMatch = new Matches;
+        $newMatch->team_one_id = $request['teamOne'];
+        $newMatch->team_second_id = $request['teamSecond'];
+        $newMatch->team_second_score = 0;
+        $newMatch->team_one_score = 0;
+        $newMatch->organization_day = "";
+        $newMatch->place = "";
+        $newMatch->match_note="";
+        $newMatch->save();
+        return "1";
+    }
+    public function GetMatches($id){
+        $listMatch = DB::table('matches')->where('team_one_id','=',$id)->orWhere('team_second_id','=',$id)->get();
+        return $listMatch;
     }
     public function AddTeam(Request $request){
         $team = new Team;
@@ -106,4 +123,22 @@ class TeamController extends Controller
         }
     }
 
+    public function GetNotifications($id){
+        return DB::table('notifications')->where('user_id',"=",$id)
+        ->where('notification_type_id',"=",3)->get();
+    }
+
+    public function GetListTeamChallenge($id){
+        if($id){
+			$notifications = DB::table('notifications')->where('user_id',"=",$id)
+            ->where('notification_type_id',"=",3)->get();
+			$listTeams = [];
+			foreach($notifications as $item){
+				if($item->notification_type_id == '3'){
+					$listTeams[] = Team::find($item->from_id); 
+				}
+			}
+	    	return $listTeams;
+    	}
+    }
 }

@@ -33,6 +33,10 @@ class NewRequest implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('user.'.$this->notifications->user_id.'.notifications');
+        if($this->notifications->notification_type_id != 3){
+            return new Channel('user.'.$this->notifications->user_id.'.notifications');
+        }else if($this->notifications->notification_type_id == 3){
+            return new Channel('team.'.$this->notifications->user_id.'.notifications');
+        }
     }
 }

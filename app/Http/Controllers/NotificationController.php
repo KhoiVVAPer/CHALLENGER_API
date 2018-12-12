@@ -71,6 +71,23 @@ class NotificationController extends Controller
 				return "1";
 			}
 		}
-	}	
+	}
+	public function AddTeamChallengeRequest(Request $request){
+		$notification = new Notification;
+    	$notification->user_id = $request['teamId'];
+    	$notification->from_id = $request['formTeamId'];
+    	$notification->notification_type_id = 3;
+    	$notification->status = 0;
+    	$notification->created_at = date('Y-m-d H:i:s');
+    	$notification->save();
+    	$list = DB::table('notifications')
+		->where('user_id','=',$request['teamId'])
+		->where('from_id','=',$request['formTeamId'])
+		->where('notification_type_id','=',3)
+		->first();
+		$noti = Notification::find($list->id);
+    	broadcast(new NewRequest($noti))->toOthers();
+    	return "1";
+	}
 }
 

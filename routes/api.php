@@ -81,6 +81,8 @@ Route::get('user/{id}/notifications','UserController@GetAllNotification');
 Route::get('user/{id}/ListUserSendNotification','NotificationController@GetListUser');
 Route::post('user/{id}/friend-request/add','NotificationController@AddFriendRequest');
 Route::post('user/{id}/team-request/add','NotificationController@AddTeamRequest');
+Route::post('team/notification/add','NotificationController@AddTeamChallengeRequest');
+
 
 Route::get('team/{id}/ListTeamSendNotification','NotificationController@GetListTeam');
 
@@ -99,6 +101,7 @@ Route::delete('user/{user_id}/friends/delete/{friend_id}','UserController@Delete
 
 
 Route::get('team/{id}/members/{idMember}/role','TeamController@GetMemberRole');
+Route::get('team/{id}/notifications','TeamController@GetNotifications');
 
 Route::get('user/{id}/conversations','UserController@GetConversations');
 Route::post('user/conversations/add','UserController@AddConversations');
@@ -119,3 +122,10 @@ Route::put('team/{id}/changeCity','UserController@ChangeCity');
 
 Route::delete('teams/{idTeam}/delete/{idUser}','TeamController@LeaveTeam');
 Route::delete('teams/delete/{idTeam}','TeamController@DeleteTeam');
+
+
+Route::get('team/{id}/ListTeamChallenge','TeamController@GetListTeamChallenge');
+Route::post('matches/add','TeamController@AddMatch');
+
+
+Route::get('team/{id}/matches','TeamController@GetMatches');
